@@ -500,7 +500,7 @@ main {
 }
 
 #site-footer a {
-  color: var(--fg);
+  color: var(--border-strong);
   font-weight: bold;
   text-decoration: none;
 }

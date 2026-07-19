@@ -35,8 +35,8 @@ There are no automated tests. Verify behavior by loading the page in a browser a
 
 Two independent `localStorage` keys:
 
-- `wordie-state` — current game in progress (`answer`, `guesses`, `results`, `gameOver`, `keyStatus`, `statsRecorded`). Restored on load via `loadState()` + `replayState()`.
-- `wordie-stats` — cross-game statistics (`played`, `wins`, `currentStreak`, `maxStreak`, `guessDistribution`, `solvedWords`). Updated once per finished game in `recordGameResult()`, guarded by `statsRecorded` so a page refresh after game-over doesn't double-count.
+- `worder-state` — current game in progress (`answer`, `guesses`, `results`, `gameOver`, `keyStatus`, `statsRecorded`). Restored on load via `loadState()` + `replayState()`.
+- `worder-stats` — cross-game statistics (`played`, `wins`, `currentStreak`, `maxStreak`, `guessDistribution`, `solvedWords`). Updated once per finished game in `recordGameResult()`, guarded by `statsRecorded` so a page refresh after game-over doesn't double-count.
 
 If you add new persisted fields, update both the save and load functions, and give `loadState`/`loadStats` a sane default so old saved data (missing the new field) doesn't break.
 

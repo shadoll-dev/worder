@@ -1,8 +1,8 @@
 (function () {
   const WORD_LENGTH = 5;
   const MAX_GUESSES = 6;
-  const STORAGE_KEY = "wordie-state";
-  const STATS_KEY = "wordie-stats";
+  const STORAGE_KEY = "worder-state";
+  const STATS_KEY = "worder-stats";
 
   let answer = "";
   let guessLetters = Array(WORD_LENGTH).fill("");

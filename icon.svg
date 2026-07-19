@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7bc86c"/>
+      <stop offset="55%" stop-color="#4fa583"/>
+      <stop offset="100%" stop-color="#2f7d7a"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.32"/>
+      <stop offset="45%" stop-color="#ffffff" stop-opacity="0.05"/>
+      <stop offset="46%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="30%" cy="22%" r="75%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+  <rect width="1024" height="1024" fill="url(#glow)"/>
+
+  <g fill="#ffffff">
+      <polygon points="200.3879335290147,351.88063583722624 312.3879335290147,715.8806358372262 415.6120664709853,684.1193641627738 303.6120664709853,320.11936416277376" />
+      <polygon points="410.37047950639277,727.6727055118796 558.3704795063927,479.67270551187954 465.62952049360723,424.32729448812046 317.62952049360723,672.3272944881204" />
+      <polygon points="465.62952049360723,479.67270551187954 613.6295204936073,727.6727055118796 706.3704795063927,672.3272944881204 558.3704795063927,424.32729448812046" />
+      <polygon points="711.6120664709853,715.8806358372262 823.6120664709853,351.88063583722624 720.3879335290147,320.11936416277376 608.3879335290147,684.1193641627738" />
+      <circle cx="252" cy="336" r="54" />
+      <circle cx="364" cy="700" r="54" />
+      <circle cx="512" cy="452" r="54" />
+      <circle cx="660" cy="700" r="54" />
+      <circle cx="772" cy="336" r="54" />
+  </g>
+
+  <rect width="1024" height="512" fill="url(#sheen)"/>
+</svg>

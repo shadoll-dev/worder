@@ -34,6 +34,7 @@ body {
   flex-direction: column;
   align-items: center;
   padding-bottom: 40px;
+  touch-action: manipulation;
 }
 
 header {

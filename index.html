@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Worder</title>
+<link rel="icon" href="data:," />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Worder</h1>
+    <button id="stats-btn" aria-label="Statistics" title="Statistics">📊</button>
+    <button id="help-btn" aria-label="How to play" title="How to play">?</button>
+    <button id="new-game-btn" title="New game">New Game</button>
+  </header>
+
+  <main>
+    <div id="board" role="grid" aria-label="Guess board"></div>
+    <p id="message" role="status" aria-live="polite"></p>
+    <div id="keyboard" role="group" aria-label="Keyboard"></div>
+    <p id="word-count"></p>
+  </main>
+
+  <div id="help-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>How to Play</h2>
+      <p>Guess the 5-letter word in 6 tries.</p>
+      <p>Each guess must be a valid 5-letter word. Press Enter to submit.</p>
+      <p>After each guess, the color of the tiles will change:</p>
+      <ul>
+        <li><span class="example-tile correct">W</span> Correct letter, correct spot</li>
+        <li><span class="example-tile present">O</span> Correct letter, wrong spot</li>
+        <li><span class="example-tile absent">X</span> Letter not in the word</li>
+      </ul>
+      <button id="close-help-btn" class="btn-primary">Close</button>
+    </div>
+  </div>
+
+  <div id="stats-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Statistics</h2>
+      <div id="stats-summary" class="stats-summary"></div>
+      <h3>Guess Distribution</h3>
+      <div id="stats-distribution" class="stats-distribution"></div>
+      <h3>Solved Words</h3>
+      <div id="stats-solved" class="stats-solved"></div>
+      <button id="close-stats-btn" class="btn-primary">Close</button>
+    </div>
+  </div>
+
+  <div id="confirm-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>New Game</h2>
+      <p id="confirm-message">Start a new game? Current progress will be lost.</p>
+      <div class="modal-actions">
+        <button id="confirm-cancel-btn" class="btn-secondary">Cancel</button>
+        <button id="confirm-ok-btn" class="btn-primary">Start New Game</button>
+      </div>
+    </div>
+  </div>
+
+  <footer id="site-footer">
+    &copy; <a href="https://shadoll.dev" target="_blank" rel="noopener">shadoll</a>. Made by Mykolay, assisted by AI
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

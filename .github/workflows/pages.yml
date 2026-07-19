@@ -30,7 +30,7 @@ jobs:
       - name: Stage site files
         run: |
           mkdir -p dist
-          cp index.html style.css script.js words.json CNAME dist/
+          cp index.html style.css script.js i18n.js words.en.json words.uk.json CNAME dist/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

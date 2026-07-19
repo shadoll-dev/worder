@@ -47,29 +47,64 @@ header {
 }
 
 header h1 {
-  font-size: 1.8rem;
+  font-size: clamp(1.2rem, 5vw, 1.8rem);
   letter-spacing: 0.05em;
   margin: 0;
   flex: 1;
+  white-space: nowrap;
 }
 
-header button {
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 400px) {
+  .header-btn {
+    padding: 0 8px;
+    font-size: 0.7rem;
+  }
+  .icon-btn {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+.icon-btn,
+.header-btn {
   background: none;
   border: 1px solid var(--border-strong);
   color: var(--fg);
-  border-radius: 4px;
-  padding: 6px 10px;
-  font-size: 0.9rem;
+  border-radius: 6px;
   cursor: pointer;
+  font-weight: bold;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
-#help-btn {
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
+.icon-btn:hover,
+.header-btn:hover {
+  background: var(--key-bg);
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
   padding: 0;
-  font-weight: bold;
-  margin-right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.header-btn {
+  height: 36px;
+  padding: 0 14px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 main {

@@ -1,9 +1,10 @@
 (function () {
   const WORD_LENGTH = 5;
   const MAX_GUESSES = 6;
-  const STORAGE_KEY = "worder-state";
-  const STATS_KEY = "worder-stats";
+  const LANG_KEY = "worder-lang";
+  const SUPPORTED_LANGS = ["en", "uk"];
 
+  let currentLang = "en";
   let answer = "";
   let guessLetters = Array(WORD_LENGTH).fill("");
   let cursor = 0;
@@ -14,6 +15,7 @@
   let keyStatus = {};
   let ANSWERS = [];
   let VALID_GUESSES = new Set();
+  let alphabetSet = new Set();
 
   const boardEl = document.getElementById("board");
   const messageEl = document.getElementById("message");
@@ -22,11 +24,39 @@
   const statsModal = document.getElementById("stats-modal");
   const confirmModal = document.getElementById("confirm-modal");
 
-  const KEY_ROWS = [
-    ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "back"],
-    ["a", "s", "d", "f", "g", "h", "j", "k", "l"],
-    ["z", "x", "c", "v", "b", "n", "m", "enter"],
-  ];
+  const KEY_ROWS_BY_LANG = {
+    en: [
+      ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "back"],
+      ["a", "s", "d", "f", "g", "h", "j", "k", "l"],
+      ["z", "x", "c", "v", "b", "n", "m", "enter"],
+    ],
+    uk: [
+      ["й", "ц", "у", "к", "е", "н", "г", "ш", "щ", "з", "х", "ї", "back"],
+      ["ф", "і", "в", "а", "п", "р", "о", "л", "д", "ж", "є"],
+      ["я", "ч", "с", "м", "и", "т", "ь", "б", "ю", "enter"],
+    ],
+  };
+
+  let KEY_ROWS = KEY_ROWS_BY_LANG.en;
+
+  function t(key, ...args) {
+    const entry = I18N[currentLang][key];
+    return typeof entry === "function" ? entry(...args) : entry;
+  }
+
+  function storageKey() {
+    return `worder-state-${currentLang}`;
+  }
+
+  function statsKey() {
+    return `worder-stats-${currentLang}`;
+  }
+
+  function detectInitialLang() {
+    const stored = localStorage.getItem(LANG_KEY);
+    if (SUPPORTED_LANGS.includes(stored)) return stored;
+    return navigator.language && navigator.language.toLowerCase().startsWith("uk") ? "uk" : "en";
+  }
 
   function pickAnswer() {
     return ANSWERS[Math.floor(Math.random() * ANSWERS.length)];
@@ -51,6 +81,7 @@
 
   function buildKeyboard() {
     keyboardEl.innerHTML = "";
+    alphabetSet = new Set(KEY_ROWS.flat().filter((k) => k !== "back" && k !== "enter"));
     KEY_ROWS.forEach((row) => {
       const rowEl = document.createElement("div");
       rowEl.className = "keyboard-row";
@@ -64,6 +95,27 @@
       });
       keyboardEl.appendChild(rowEl);
     });
+  }
+
+  function applyStaticTranslations() {
+    document.documentElement.lang = currentLang;
+    document.querySelectorAll("[data-i18n]").forEach((el) => {
+      el.textContent = t(el.dataset.i18n);
+    });
+    document.querySelectorAll("[data-i18n-title]").forEach((el) => {
+      const text = t(el.dataset.i18nTitle);
+      el.title = text;
+      el.setAttribute("aria-label", text);
+    });
+    document.getElementById("lang-btn").textContent = t("langSwitchTo");
+  }
+
+  function updateWordCount() {
+    document.getElementById("word-count").textContent = t(
+      "wordCount",
+      ANSWERS.length,
+      VALID_GUESSES.size
+    );
   }
 
   function setMessage(text, duration) {
@@ -184,7 +236,7 @@
       updateRowDisplay();
       return;
     }
-    if (/^[a-z]$/.test(key)) {
+    if (alphabetSet.has(key)) {
       guessLetters[cursor] = key;
       const filledCursor = cursor;
       cursor = Math.min(WORD_LENGTH - 1, cursor + 1);
@@ -198,12 +250,12 @@
   function submitGuess() {
     const guess = guessLetters.join("");
     if (guess.length < WORD_LENGTH) {
-      setMessage("Not enough letters", 1500);
+      setMessage(t("notEnoughLetters"), 1500);
       shakeRow();
       return;
     }
     if (!VALID_GUESSES.has(guess)) {
-      setMessage("Not in word list", 1500);
+      setMessage(t("notInWordList"), 1500);
       shakeRow();
       return;
     }
@@ -223,15 +275,11 @@
       if (won) {
         gameOver = true;
         bounceRow(rowIndex);
-        setMessage(
-          ["Genius!", "Magnificent!", "Impressive!", "Splendid!", "Great!", "Phew!"][
-            rowIndex
-          ] || "You won!"
-        );
+        setMessage(I18N[currentLang].winMessages[rowIndex] || t("youWon"));
         messageEl.classList.add("win-message");
       } else if (guesses.length === MAX_GUESSES) {
         gameOver = true;
-        setMessage(`The word was ${answer.toUpperCase()}`);
+        setMessage(t("theWordWas", answer.toUpperCase()));
       }
       if (gameOver && !statsRecorded) {
         recordGameResult(won, guesses.length, answer);
@@ -253,17 +301,17 @@
 
   function saveState() {
     localStorage.setItem(
-      STORAGE_KEY,
+      storageKey(),
       JSON.stringify({ answer, guesses, results, gameOver, keyStatus, statsRecorded })
     );
   }
 
   function loadState() {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(storageKey());
     if (!raw) return false;
     try {
       const state = JSON.parse(raw);
-      if (!state.answer || state.answer.length !== WORD_LENGTH) return false;
+      if (!state.answer || Array.from(state.answer).length !== WORD_LENGTH) return false;
       answer = state.answer;
       guesses = state.guesses || [];
       results = state.results || [];
@@ -288,7 +336,7 @@
   }
 
   function loadStats() {
-    const raw = localStorage.getItem(STATS_KEY);
+    const raw = localStorage.getItem(statsKey());
     if (!raw) return defaultStats();
     try {
       const stats = JSON.parse(raw);
@@ -299,7 +347,7 @@
   }
 
   function saveStats(stats) {
-    localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+    localStorage.setItem(statsKey(), JSON.stringify(stats));
   }
 
   function recordGameResult(won, guessCount, word) {
@@ -324,10 +372,10 @@
     const summaryEl = document.getElementById("stats-summary");
     summaryEl.innerHTML = "";
     [
-      ["Played", stats.played],
-      ["Win %", winPct],
-      ["Streak", stats.currentStreak],
-      ["Max Streak", stats.maxStreak],
+      [t("statPlayed"), stats.played],
+      [t("statWinPct"), winPct],
+      [t("statStreak"), stats.currentStreak],
+      [t("statMaxStreak"), stats.maxStreak],
     ].forEach(([label, value]) => {
       const div = document.createElement("div");
       div.className = "stat";
@@ -353,7 +401,7 @@
     const solvedEl = document.getElementById("stats-solved");
     solvedEl.innerHTML = "";
     if (stats.solvedWords.length === 0) {
-      solvedEl.innerHTML = '<span class="stats-empty">No words solved yet.</span>';
+      solvedEl.innerHTML = `<span class="stats-empty">${t("noWordsSolved")}</span>`;
     } else {
       [...stats.solvedWords].reverse().forEach((word) => {
         const span = document.createElement("span");
@@ -380,14 +428,10 @@
     if (gameOver) {
       const won = results.length && results[results.length - 1].every((r) => r === "correct");
       if (won) {
-        setMessage(
-          ["Genius!", "Magnificent!", "Impressive!", "Splendid!", "Great!", "Phew!"][
-            results.length - 1
-          ] || "You won!"
-        );
+        setMessage(I18N[currentLang].winMessages[results.length - 1] || t("youWon"));
         messageEl.classList.add("win-message");
       } else if (guesses.length === MAX_GUESSES) {
-        setMessage(`The word was ${answer.toUpperCase()}`);
+        setMessage(t("theWordWas", answer.toUpperCase()));
       }
     }
   }
@@ -409,19 +453,14 @@
   }
 
   async function loadWords() {
-    const res = await fetch("words.json");
+    const res = await fetch(`words.${currentLang}.json`);
     const data = await res.json();
     ANSWERS = data.answers;
     VALID_GUESSES = new Set(data.valid);
-    document.getElementById("word-count").textContent =
-      `${ANSWERS.length.toLocaleString()} possible words · ${VALID_GUESSES.size.toLocaleString()} accepted guesses`;
+    updateWordCount();
   }
 
-  async function init() {
-    setMessage("Loading words...");
-    await loadWords();
-    messageEl.textContent = "";
-
+  function startOrRestoreGame() {
     buildBoard();
     buildKeyboard();
     if (loadState()) {
@@ -429,6 +468,30 @@
     } else {
       newGame();
     }
+  }
+
+  async function switchLanguage(lang) {
+    if (!SUPPORTED_LANGS.includes(lang) || lang === currentLang) return;
+    currentLang = lang;
+    localStorage.setItem(LANG_KEY, lang);
+    KEY_ROWS = KEY_ROWS_BY_LANG[currentLang];
+    applyStaticTranslations();
+    setMessage(t("loadingWords"));
+    await loadWords();
+    messageEl.textContent = "";
+    messageEl.classList.remove("win-message");
+    startOrRestoreGame();
+  }
+
+  async function init() {
+    currentLang = detectInitialLang();
+    KEY_ROWS = KEY_ROWS_BY_LANG[currentLang];
+    applyStaticTranslations();
+    setMessage(t("loadingWords"));
+    await loadWords();
+    messageEl.textContent = "";
+
+    startOrRestoreGame();
 
     document.addEventListener("keydown", (e) => {
       if (helpModal && !helpModal.classList.contains("hidden")) return;
@@ -439,7 +502,11 @@
       else if (key === "backspace") handleKey("back");
       else if (key === "arrowleft") handleKey("left");
       else if (key === "arrowright") handleKey("right");
-      else if (/^[a-z]$/.test(key)) handleKey(key);
+      else if (alphabetSet.has(key)) handleKey(key);
+    });
+
+    document.getElementById("lang-btn").addEventListener("click", () => {
+      switchLanguage(currentLang === "en" ? "uk" : "en");
     });
 
     document.getElementById("new-game-btn").addEventListener("click", () => {

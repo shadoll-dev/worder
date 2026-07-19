@@ -10,9 +10,12 @@
 <body>
   <header>
     <h1>Worder</h1>
-    <button id="stats-btn" aria-label="Statistics" title="Statistics">📊</button>
-    <button id="help-btn" aria-label="How to play" title="How to play">?</button>
-    <button id="new-game-btn" title="New game">New Game</button>
+    <div class="header-actions">
+      <button id="lang-btn" class="header-btn" title="Switch language">UA</button>
+      <button id="stats-btn" class="header-btn" data-i18n="statsBtn" data-i18n-title="statsBtn" aria-label="Statistics" title="Statistics">Stats</button>
+      <button id="help-btn" class="icon-btn" data-i18n-title="helpBtn" aria-label="How to play" title="How to play">?</button>
+      <button id="new-game-btn" class="header-btn" data-i18n="newGameBtn" data-i18n-title="newGameBtn" title="New game">New Game</button>
+    </div>
   </header>
 
   <main>
@@ -24,38 +27,38 @@
 
   <div id="help-modal" class="modal hidden">
     <div class="modal-content">
-      <h2>How to Play</h2>
-      <p>Guess the 5-letter word in 6 tries.</p>
-      <p>Each guess must be a valid 5-letter word. Press Enter to submit.</p>
-      <p>After each guess, the color of the tiles will change:</p>
+      <h2 data-i18n="helpTitle">How to Play</h2>
+      <p data-i18n="helpIntro">Guess the 5-letter word in 6 tries.</p>
+      <p data-i18n="helpRule">Each guess must be a valid 5-letter word. Press Enter to submit.</p>
+      <p data-i18n="helpColorIntro">After each guess, the color of the tiles will change:</p>
       <ul>
-        <li><span class="example-tile correct">W</span> Correct letter, correct spot</li>
-        <li><span class="example-tile present">O</span> Correct letter, wrong spot</li>
-        <li><span class="example-tile absent">X</span> Letter not in the word</li>
+        <li><span class="example-tile correct">W</span> <span data-i18n="helpCorrect">Correct letter, correct spot</span></li>
+        <li><span class="example-tile present">O</span> <span data-i18n="helpPresent">Correct letter, wrong spot</span></li>
+        <li><span class="example-tile absent">X</span> <span data-i18n="helpAbsent">Letter not in the word</span></li>
       </ul>
-      <button id="close-help-btn" class="btn-primary">Close</button>
+      <button id="close-help-btn" class="btn-primary" data-i18n="close">Close</button>
     </div>
   </div>
 
   <div id="stats-modal" class="modal hidden">
     <div class="modal-content">
-      <h2>Statistics</h2>
+      <h2 data-i18n="statsTitle">Statistics</h2>
       <div id="stats-summary" class="stats-summary"></div>
-      <h3>Guess Distribution</h3>
+      <h3 data-i18n="guessDistribution">Guess Distribution</h3>
       <div id="stats-distribution" class="stats-distribution"></div>
-      <h3>Solved Words</h3>
+      <h3 data-i18n="solvedWords">Solved Words</h3>
       <div id="stats-solved" class="stats-solved"></div>
-      <button id="close-stats-btn" class="btn-primary">Close</button>
+      <button id="close-stats-btn" class="btn-primary" data-i18n="close">Close</button>
     </div>
   </div>
 
   <div id="confirm-modal" class="modal hidden">
     <div class="modal-content">
-      <h2>New Game</h2>
-      <p id="confirm-message">Start a new game? Current progress will be lost.</p>
+      <h2 data-i18n="newGameTitle">New Game</h2>
+      <p id="confirm-message" data-i18n="confirmNewGame">Start a new game? Current progress will be lost.</p>
       <div class="modal-actions">
-        <button id="confirm-cancel-btn" class="btn-secondary">Cancel</button>
-        <button id="confirm-ok-btn" class="btn-primary">Start New Game</button>
+        <button id="confirm-cancel-btn" class="btn-secondary" data-i18n="cancel">Cancel</button>
+        <button id="confirm-ok-btn" class="btn-primary" data-i18n="startNewGame">Start New Game</button>
       </div>
     </div>
   </div>
@@ -64,6 +67,7 @@
     &copy; <a href="https://shadoll.dev" target="_blank" rel="noopener">shadoll</a>. Made by Mykolay, assisted by AI
   </footer>
 
+  <script src="i18n.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

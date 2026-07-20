@@ -7,6 +7,7 @@
   --present: #c9b458;
   --absent: #787c7e;
   --key-bg: #d3d6da;
+  --hard: #c9504a;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,6 +20,7 @@
     --present: #b59f3b;
     --absent: #3a3a3c;
     --key-bg: #818384;
+    --hard: #a8433d;
   }
 }
 
@@ -53,6 +55,38 @@ header h1 {
   margin: 0;
   flex: 1;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.level-badge {
+  display: none;
+  vertical-align: middle;
+  margin-left: 6px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.6rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: bold;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.level-badge.visible {
+  display: inline-block;
+}
+
+.level-badge.easy {
+  background: var(--correct);
+}
+
+.level-badge.moderate {
+  background: var(--present);
+}
+
+.level-badge.hard {
+  background: var(--hard);
 }
 
 .header-actions {
@@ -168,7 +202,8 @@ header h1 {
   gap: 4px;
 }
 
-.lang-option {
+.lang-option,
+.level-option {
   background: none;
   border: 1px solid transparent;
   color: var(--fg);
@@ -180,11 +215,13 @@ header h1 {
   font-size: 0.85rem;
 }
 
-.lang-option:hover {
+.lang-option:hover,
+.level-option:hover {
   background: var(--key-bg);
 }
 
-.lang-option.selected {
+.lang-option.selected,
+.level-option.selected {
   background: var(--correct);
   border-color: var(--correct);
   color: #fff;

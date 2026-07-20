@@ -2,6 +2,11 @@ const I18N = {
   en: {
     statsBtn: "Stats",
     languageLabel: "Language",
+    difficultyLabel: "Difficulty",
+    levelAll: "All words",
+    levelEasy: "Easy",
+    levelModerate: "Moderate",
+    levelHard: "Hard",
     helpBtn: "How to play",
     newGameBtn: "New Game",
     helpTitle: "How to Play",
@@ -37,6 +42,11 @@ const I18N = {
   uk: {
     statsBtn: "Стат.",
     languageLabel: "Мова",
+    difficultyLabel: "Складність",
+    levelAll: "Усі слова",
+    levelEasy: "Легко",
+    levelModerate: "Середньо",
+    levelHard: "Складно",
     helpBtn: "Як грати",
     newGameBtn: "Нова гра",
     helpTitle: "Як грати",

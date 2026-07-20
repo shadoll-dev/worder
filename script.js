@@ -2,10 +2,13 @@
   const WORD_LENGTH = 5;
   const MAX_GUESSES = 6;
   const LANG_KEY = "worder-lang";
+  const LEVEL_KEY = "worder-level";
   const LANGUAGE_NAMES = { en: "English", uk: "Українська" };
   const SUPPORTED_LANGS = Object.keys(LANGUAGE_NAMES);
+  const LEVELS = ["all", "easy", "moderate", "hard"];
 
   let currentLang = "en";
+  let wordLevel = "all";
   let answer = "";
   let guessLetters = Array(WORD_LENGTH).fill("");
   let cursor = 0;
@@ -16,7 +19,10 @@
   let keyStatus = {};
   let ANSWERS = [];
   let VALID_GUESSES = new Set();
+  let DIFFICULTY_LEVELS = { easy: [], moderate: [], hard: [] };
+  let WORD_LEVEL_MAP = new Map();
   let alphabetSet = new Set();
+  let pendingConfirmAction = null;
 
   const boardEl = document.getElementById("board");
   const messageEl = document.getElementById("message");
@@ -66,8 +72,27 @@
     return navigator.language && navigator.language.toLowerCase().startsWith("uk") ? "uk" : "en";
   }
 
+  function detectInitialLevel() {
+    const stored = localStorage.getItem(LEVEL_KEY);
+    return LEVELS.includes(stored) ? stored : "all";
+  }
+
   function pickAnswer() {
-    return ANSWERS[Math.floor(Math.random() * ANSWERS.length)];
+    const pool = wordLevel !== "all" && DIFFICULTY_LEVELS[wordLevel] && DIFFICULTY_LEVELS[wordLevel].length
+      ? DIFFICULTY_LEVELS[wordLevel]
+      : ANSWERS;
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+
+  function updateLevelBadge() {
+    const badge = document.getElementById("level-badge");
+    const level = WORD_LEVEL_MAP.get(answer);
+    if (!level) {
+      badge.className = "level-badge";
+      return;
+    }
+    badge.className = `level-badge visible ${level}`;
+    badge.textContent = t(`level${level.charAt(0).toUpperCase()}${level.slice(1)}`);
   }
 
   function buildBoard() {
@@ -119,6 +144,11 @@
       btn.classList.toggle("selected", btn.dataset.lang === currentLang);
       btn.setAttribute("aria-checked", btn.dataset.lang === currentLang);
     });
+    document.querySelectorAll(".level-option").forEach((btn) => {
+      btn.textContent = t(`level${btn.dataset.level.charAt(0).toUpperCase()}${btn.dataset.level.slice(1)}`);
+      btn.classList.toggle("selected", btn.dataset.level === wordLevel);
+      btn.setAttribute("aria-checked", btn.dataset.level === wordLevel);
+    });
   }
 
   function buildLangOptions() {
@@ -137,6 +167,41 @@
       });
       container.appendChild(btn);
     });
+  }
+
+  function buildLevelOptions() {
+    const container = document.getElementById("level-options");
+    container.innerHTML = "";
+    LEVELS.forEach((level) => {
+      const btn = document.createElement("button");
+      btn.className = "level-option";
+      btn.type = "button";
+      btn.setAttribute("role", "radio");
+      btn.dataset.level = level;
+      btn.addEventListener("click", () => {
+        if (level === wordLevel) {
+          closeMenu();
+          return;
+        }
+        requestFreshGame(() => {
+          wordLevel = level;
+          localStorage.setItem(LEVEL_KEY, level);
+          applyStaticTranslations();
+          newGame();
+        });
+        closeMenu();
+      });
+      container.appendChild(btn);
+    });
+  }
+
+  function requestFreshGame(action) {
+    if (!gameOver && guesses.length > 0) {
+      pendingConfirmAction = action;
+      confirmModal.classList.remove("hidden");
+    } else {
+      action();
+    }
   }
 
   function updateWordCount() {
@@ -469,6 +534,7 @@
       const k = btn.dataset.key;
       if (keyStatus[k]) btn.classList.add(keyStatus[k]);
     });
+    updateLevelBadge();
     if (gameOver) {
       const won = results.length && results[results.length - 1].every((r) => r === "correct");
       if (won) {
@@ -493,6 +559,7 @@
     messageEl.classList.remove("win-message");
     buildBoard();
     buildKeyboard();
+    updateLevelBadge();
     saveState();
   }
 
@@ -501,6 +568,11 @@
     const data = await res.json();
     ANSWERS = data.answers;
     VALID_GUESSES = new Set(data.valid);
+    DIFFICULTY_LEVELS = data.difficultyLevels || { easy: [], moderate: [], hard: [] };
+    WORD_LEVEL_MAP = new Map();
+    Object.entries(DIFFICULTY_LEVELS).forEach(([level, words]) => {
+      words.forEach((w) => WORD_LEVEL_MAP.set(w, level));
+    });
     updateWordCount();
   }
 
@@ -529,8 +601,10 @@
 
   async function init() {
     currentLang = detectInitialLang();
+    wordLevel = detectInitialLevel();
     KEY_ROWS = KEY_ROWS_BY_LANG[currentLang];
     buildLangOptions();
+    buildLevelOptions();
     applyStaticTranslations();
     setMessage(t("loadingWords"));
     await loadWords();
@@ -569,21 +643,24 @@
     });
 
     document.getElementById("new-game-btn").addEventListener("click", () => {
-      if (gameOver || guesses.length === 0) {
-        newGame();
-      } else {
-        confirmModal.classList.remove("hidden");
-      }
+      requestFreshGame(() => newGame());
     });
     document.getElementById("confirm-ok-btn").addEventListener("click", () => {
       confirmModal.classList.add("hidden");
-      newGame();
+      if (pendingConfirmAction) {
+        pendingConfirmAction();
+        pendingConfirmAction = null;
+      }
     });
     document.getElementById("confirm-cancel-btn").addEventListener("click", () => {
       confirmModal.classList.add("hidden");
+      pendingConfirmAction = null;
     });
     confirmModal.addEventListener("click", (e) => {
-      if (e.target === confirmModal) confirmModal.classList.add("hidden");
+      if (e.target === confirmModal) {
+        confirmModal.classList.add("hidden");
+        pendingConfirmAction = null;
+      }
     });
 
     document.getElementById("help-btn").addEventListener("click", () => {

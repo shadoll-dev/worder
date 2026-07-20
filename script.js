@@ -2,7 +2,8 @@
   const WORD_LENGTH = 5;
   const MAX_GUESSES = 6;
   const LANG_KEY = "worder-lang";
-  const SUPPORTED_LANGS = ["en", "uk"];
+  const LANGUAGE_NAMES = { en: "English", uk: "Українська" };
+  const SUPPORTED_LANGS = Object.keys(LANGUAGE_NAMES);
 
   let currentLang = "en";
   let answer = "";
@@ -23,6 +24,13 @@
   const helpModal = document.getElementById("help-modal");
   const statsModal = document.getElementById("stats-modal");
   const confirmModal = document.getElementById("confirm-modal");
+  const menuBtn = document.getElementById("menu-btn");
+  const menuPanel = document.getElementById("menu-panel");
+
+  function closeMenu() {
+    menuPanel.classList.add("hidden");
+    menuBtn.setAttribute("aria-expanded", "false");
+  }
 
   const KEY_ROWS_BY_LANG = {
     en: [
@@ -107,7 +115,28 @@
       el.title = text;
       el.setAttribute("aria-label", text);
     });
-    document.getElementById("lang-btn").textContent = t("langSwitchTo");
+    document.querySelectorAll(".lang-option").forEach((btn) => {
+      btn.classList.toggle("selected", btn.dataset.lang === currentLang);
+      btn.setAttribute("aria-checked", btn.dataset.lang === currentLang);
+    });
+  }
+
+  function buildLangOptions() {
+    const container = document.getElementById("lang-options");
+    container.innerHTML = "";
+    SUPPORTED_LANGS.forEach((code) => {
+      const btn = document.createElement("button");
+      btn.className = "lang-option";
+      btn.type = "button";
+      btn.setAttribute("role", "radio");
+      btn.dataset.lang = code;
+      btn.textContent = LANGUAGE_NAMES[code];
+      btn.addEventListener("click", () => {
+        switchLanguage(code);
+        closeMenu();
+      });
+      container.appendChild(btn);
+    });
   }
 
   function updateWordCount() {
@@ -501,6 +530,7 @@
   async function init() {
     currentLang = detectInitialLang();
     KEY_ROWS = KEY_ROWS_BY_LANG[currentLang];
+    buildLangOptions();
     applyStaticTranslations();
     setMessage(t("loadingWords"));
     await loadWords();
@@ -512,6 +542,8 @@
       if (helpModal && !helpModal.classList.contains("hidden")) return;
       if (statsModal && !statsModal.classList.contains("hidden")) return;
       if (confirmModal && !confirmModal.classList.contains("hidden")) return;
+      if (e.key === "Escape") closeMenu();
+      if (!menuPanel.classList.contains("hidden")) return;
       const key = e.key.toLowerCase();
       if (key === "enter") handleKey("enter");
       else if (key === "backspace") handleKey("back");
@@ -520,8 +552,20 @@
       else if (alphabetSet.has(key)) handleKey(key);
     });
 
-    document.getElementById("lang-btn").addEventListener("click", () => {
-      switchLanguage(currentLang === "en" ? "uk" : "en");
+    menuBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isOpen = !menuPanel.classList.contains("hidden");
+      if (isOpen) {
+        closeMenu();
+      } else {
+        menuPanel.classList.remove("hidden");
+        menuBtn.setAttribute("aria-expanded", "true");
+      }
+    });
+    document.addEventListener("click", (e) => {
+      if (!menuPanel.classList.contains("hidden") && !menuPanel.contains(e.target) && e.target !== menuBtn) {
+        closeMenu();
+      }
     });
 
     document.getElementById("new-game-btn").addEventListener("click", () => {
@@ -553,6 +597,7 @@
     });
 
     document.getElementById("stats-btn").addEventListener("click", () => {
+      closeMenu();
       renderStats();
       statsModal.classList.remove("hidden");
     });

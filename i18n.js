@@ -1,8 +1,7 @@
 const I18N = {
   en: {
-    langLabel: "EN",
-    langSwitchTo: "UA",
     statsBtn: "Stats",
+    languageLabel: "Language",
     helpBtn: "How to play",
     newGameBtn: "New Game",
     helpTitle: "How to Play",
@@ -36,9 +35,8 @@ const I18N = {
     youWon: "You won!",
   },
   uk: {
-    langLabel: "UA",
-    langSwitchTo: "EN",
     statsBtn: "Стат.",
+    languageLabel: "Мова",
     helpBtn: "Як грати",
     newGameBtn: "Нова гра",
     helpTitle: "Як грати",

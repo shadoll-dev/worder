@@ -132,6 +132,7 @@ main {
 }
 
 .tile {
+  position: relative;
   aspect-ratio: 1;
   border: 2px solid var(--border);
   display: flex;
@@ -152,6 +153,17 @@ main {
 .tile.active {
   border-color: var(--correct);
   box-shadow: 0 0 0 1px var(--correct);
+}
+
+.tile.wasted::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--present);
 }
 
 .tile.correct {
@@ -238,14 +250,6 @@ main {
   text-align: center;
 }
 
-.waste-info {
-  margin: 0;
-  font-size: 0.8rem;
-  color: var(--present);
-  text-align: center;
-  font-weight: bold;
-  min-height: 1em;
-}
 
 #keyboard {
   display: flex;

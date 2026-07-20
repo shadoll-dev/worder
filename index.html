@@ -16,7 +16,7 @@
   <header>
     <h1>Worder</h1>
     <div class="header-actions">
-      <button id="lang-btn" class="header-btn" title="Switch language">UA</button>
+      <select id="lang-select" class="header-btn lang-select" aria-label="Language" title="Language"></select>
       <button id="stats-btn" class="header-btn" data-i18n="statsBtn" data-i18n-title="statsBtn" aria-label="Statistics" title="Statistics">Stats</button>
       <button id="help-btn" class="icon-btn" data-i18n-title="helpBtn" aria-label="How to play" title="How to play">?</button>
       <button id="new-game-btn" class="header-btn" data-i18n="newGameBtn" data-i18n-title="newGameBtn" title="New game">New Game</button>
@@ -27,7 +27,6 @@
     <div id="board" role="grid" aria-label="Guess board"></div>
     <p id="message" role="status" aria-live="polite"></p>
     <div id="keyboard" role="group" aria-label="Keyboard"></div>
-    <p id="waste-info" class="waste-info"></p>
     <p id="word-count"></p>
   </main>
 

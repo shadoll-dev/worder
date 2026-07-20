@@ -13,7 +13,6 @@
   let gameOver = false;
   let statsRecorded = false;
   let keyStatus = {};
-  let wastedLetters = 0;
   let ANSWERS = [];
   let VALID_GUESSES = new Set();
   let alphabetSet = new Set();
@@ -119,11 +118,6 @@
     );
   }
 
-  function updateWasteDisplay() {
-    const el = document.getElementById("waste-info");
-    el.textContent = wastedLetters > 0 ? t("wastedLive", wastedLetters) : "";
-  }
-
   function setMessage(text, duration) {
     messageEl.textContent = text;
     if (duration) {
@@ -145,6 +139,7 @@
       tile.textContent = letter;
       tile.classList.toggle("filled", !!letter);
       tile.classList.toggle("active", !gameOver && c === cursor);
+      tile.classList.toggle("wasted", !!letter && keyStatus[letter] === "absent");
     }
   }
 
@@ -189,6 +184,7 @@
   function applyResultToRow(rowIndex, guess, result) {
     for (let c = 0; c < WORD_LENGTH; c++) {
       const tile = document.getElementById(`tile-${rowIndex}-${c}`);
+      tile.classList.remove("wasted", "active");
       setTimeout(() => {
         tile.classList.add("flip");
         tile.classList.add(result[c]);
@@ -268,9 +264,7 @@
 
     const wastedInGuess = guess.split("").filter((l) => keyStatus[l] === "absent").length;
     if (wastedInGuess > 0) {
-      wastedLetters += wastedInGuess;
       recordWastedLetters(wastedInGuess);
-      updateWasteDisplay();
     }
 
     const result = scoreGuess(guess, answer);
@@ -315,7 +309,7 @@
   function saveState() {
     localStorage.setItem(
       storageKey(),
-      JSON.stringify({ answer, guesses, results, gameOver, keyStatus, statsRecorded, wastedLetters })
+      JSON.stringify({ answer, guesses, results, gameOver, keyStatus, statsRecorded })
     );
   }
 
@@ -331,7 +325,6 @@
       gameOver = !!state.gameOver;
       keyStatus = state.keyStatus || {};
       statsRecorded = !!state.statsRecorded;
-      wastedLetters = state.wastedLetters || 0;
       return true;
     } catch {
       return false;
@@ -447,7 +440,6 @@
       const k = btn.dataset.key;
       if (keyStatus[k]) btn.classList.add(keyStatus[k]);
     });
-    updateWasteDisplay();
     if (gameOver) {
       const won = results.length && results[results.length - 1].every((r) => r === "correct");
       if (won) {
@@ -468,12 +460,10 @@
     gameOver = false;
     statsRecorded = false;
     keyStatus = {};
-    wastedLetters = 0;
     messageEl.textContent = "";
     messageEl.classList.remove("win-message");
     buildBoard();
     buildKeyboard();
-    updateWasteDisplay();
     saveState();
   }
 

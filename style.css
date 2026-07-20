@@ -615,6 +615,21 @@ main {
   font-weight: bold;
 }
 
+.solved-word.easy {
+  background: var(--correct);
+  color: #fff;
+}
+
+.solved-word.moderate {
+  background: var(--present);
+  color: #fff;
+}
+
+.solved-word.hard {
+  background: var(--hard);
+  color: #fff;
+}
+
 .stats-empty {
   font-size: 0.85rem;
   color: var(--border-strong);

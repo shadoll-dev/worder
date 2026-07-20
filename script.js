@@ -514,7 +514,8 @@
     } else {
       [...stats.solvedWords].reverse().forEach((word) => {
         const span = document.createElement("span");
-        span.className = "solved-word";
+        const level = WORD_LEVEL_MAP.get(word);
+        span.className = level ? `solved-word ${level}` : "solved-word";
         span.textContent = word;
         solvedEl.appendChild(span);
       });

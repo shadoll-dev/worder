@@ -77,6 +77,17 @@ header h1 {
   display: inline-block;
 }
 
+.level-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.level-badge-row .level-badge {
+  margin-left: 0;
+}
+
 .level-badge.easy {
   background: var(--correct);
 }
@@ -87,6 +98,10 @@ header h1 {
 
 .level-badge.hard {
   background: var(--hard);
+}
+
+.level-badge.all {
+  background: var(--border-strong);
 }
 
 .header-actions {
@@ -133,6 +148,7 @@ header h1 {
   font-size: 1.1rem;
   line-height: 1;
 }
+
 
 .header-btn {
   height: 36px;
@@ -525,6 +541,19 @@ main {
 .example-tile.correct { background: var(--correct); }
 .example-tile.present { background: var(--present); }
 .example-tile.absent { background: var(--absent); }
+
+.menu-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 4px;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  font-weight: bold;
+  vertical-align: middle;
+}
 
 #close-help-btn,
 #close-stats-btn {

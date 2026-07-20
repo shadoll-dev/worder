@@ -51,8 +51,14 @@
         <li><span class="example-tile present">O</span> <span data-i18n="helpPresent">Correct letter, wrong spot</span></li>
         <li><span class="example-tile absent">X</span> <span data-i18n="helpAbsent">Letter not in the word</span></li>
       </ul>
-      <p data-i18n="helpLanguage">Use the ⋮ menu to switch between English and Ukrainian words at any time.</p>
-      <p data-i18n="helpDifficulty">The ⋮ menu also lets you filter which words can be picked: All words, Easy, Moderate, or Hard. The colored badge next to the title shows the current word's level.</p>
+      <p><span data-i18n="helpDifficultyPre">The</span> <span class="menu-key">⋮</span> <span data-i18n="helpDifficultyPost">menu also lets you filter which words can be picked. The colored badge next to the title shows the current word's level:</span></p>
+      <div class="level-badge-row">
+        <span class="level-badge visible all" data-i18n="levelAll">All words</span>
+        <span class="level-badge visible easy" data-i18n="levelEasy">Easy</span>
+        <span class="level-badge visible moderate" data-i18n="levelModerate">Moderate</span>
+        <span class="level-badge visible hard" data-i18n="levelHard">Hard</span>
+      </div>
+      <p><span data-i18n="helpLanguagePre">Use the</span> <span class="menu-key">⋮</span> <span data-i18n="helpLanguagePost">menu to switch between English and Ukrainian words at any time.</span></p>
       <button id="close-help-btn" class="btn-primary" data-i18n="close">Close</button>
     </div>
   </div>

@@ -238,6 +238,15 @@ main {
   text-align: center;
 }
 
+.waste-info {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--present);
+  text-align: center;
+  font-weight: bold;
+  min-height: 1em;
+}
+
 #keyboard {
   display: flex;
   flex-direction: column;
@@ -401,7 +410,9 @@ main {
 
 .stats-summary {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-around;
+  row-gap: 12px;
   text-align: center;
   margin: 12px 0;
 }
@@ -409,6 +420,7 @@ main {
 .stats-summary .stat {
   display: flex;
   flex-direction: column;
+  min-width: 64px;
 }
 
 .stats-summary .stat-value {

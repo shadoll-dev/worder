@@ -625,6 +625,34 @@ main {
   background: var(--correct);
 }
 
+.dist-bar.empty {
+  background: transparent;
+  color: var(--border-strong);
+  min-width: 0;
+  padding: 2px 6px;
+}
+
+.dist-row-loss {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+}
+
+.dist-bar-loss {
+  background: var(--hard);
+}
+
+.dist-bar-loss.highlight {
+  background: var(--hard);
+  box-shadow: 0 0 0 1px #fff inset;
+}
+
+.dist-bar-loss.empty {
+  background: transparent;
+  color: var(--border-strong);
+  box-shadow: none;
+}
+
 .stats-solved {
   max-height: 150px;
   overflow-y: auto;

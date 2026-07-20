@@ -432,6 +432,7 @@
       currentStreak: 0,
       maxStreak: 0,
       guessDistribution: [0, 0, 0, 0, 0, 0],
+      losses: 0,
       solvedWords: [],
       wastedLetters: 0,
     };
@@ -463,6 +464,7 @@
       stats.solvedWords.push(word);
     } else {
       stats.currentStreak = 0;
+      stats.losses = (stats.losses || 0) + 1;
     }
     saveStats(stats);
   }
@@ -494,18 +496,31 @@
 
     const distEl = document.getElementById("stats-distribution");
     distEl.innerHTML = "";
-    const maxCount = Math.max(1, ...stats.guessDistribution);
+    const losses = stats.losses || 0;
+    const maxCount = Math.max(1, ...stats.guessDistribution, losses);
     stats.guessDistribution.forEach((count, i) => {
       const row = document.createElement("div");
       row.className = "dist-row";
       const isLast = guesses.length === i + 1 && gameOver && stats.solvedWords[stats.solvedWords.length - 1] === answer;
+      const empty = count === 0 ? " empty" : "";
       row.innerHTML = `
         <span class="dist-label">${i + 1}</span>
         <span class="dist-bar-wrap">
-          <span class="dist-bar${isLast ? " highlight" : ""}" style="width:${(count / maxCount) * 100}%">${count}</span>
+          <span class="dist-bar${isLast ? " highlight" : ""}${empty}" style="width:${(count / maxCount) * 100}%">${count}</span>
         </span>`;
       distEl.appendChild(row);
     });
+
+    const lossRow = document.createElement("div");
+    lossRow.className = "dist-row dist-row-loss";
+    const isLastLoss = losses > 0 && gameOver && guesses.length === MAX_GUESSES && !(results.length && results[results.length - 1].every((r) => r === "correct"));
+    const lossEmpty = losses === 0 ? " empty" : "";
+    lossRow.innerHTML = `
+      <span class="dist-label">X</span>
+      <span class="dist-bar-wrap">
+        <span class="dist-bar dist-bar-loss${isLastLoss ? " highlight" : ""}${lossEmpty}" style="width:${(losses / maxCount) * 100}%">${losses}</span>
+      </span>`;
+    distEl.appendChild(lossRow);
 
     const solvedEl = document.getElementById("stats-solved");
     solvedEl.innerHTML = "";

@@ -703,4 +703,22 @@
   }
 
   init();
+  registerServiceWorker();
+
+  function registerServiceWorker() {
+    if (!("serviceWorker" in navigator)) return;
+
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("sw.js").catch(() => {});
+    });
+
+    // A new SW takes control after skipWaiting()/clients.claim() once the previous
+    // page's assets are all replaced — reload once so the page picks up the update.
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (refreshing) return;
+      refreshing = true;
+      window.location.reload();
+    });
+  }
 })();

@@ -14,6 +14,8 @@ There is no build step. Serve the directory over HTTP and load it in a browser:
 python3 -m http.server 8971
 ```
 
+Port 8971 is this game's fixed dev-server port, tracked in the root [`AGENTS.md`](../AGENTS.md#local-dev-server-ports) alongside every other game's — don't change it or reuse it for another game in this repo.
+
 `script.js` fetches `words.en.json` / `words.uk.json` at startup (whichever is active), so the app must be served over HTTP(S) — it will not work opened as a `file://` URL.
 
 After editing `script.js`, sanity-check syntax before assuming it works:
